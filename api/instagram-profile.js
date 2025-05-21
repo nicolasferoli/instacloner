@@ -1,8 +1,8 @@
 // Arquivo versão JavaScript para a Vercel
 // Usa ES Modules para compatibilidade com "type": "module" no package.json
 
-// Variável de ambiente para armazenar seu token da API do ScrapingDog
-const SCRAPINGDOG_API_KEY = process.env.SCRAPINGDOG_API_KEY || '682dd599e54091ba210f54e7';
+// Variável de ambiente para armazenar seu token da API do ScrapCreators
+const SCRAPECREATORS_API_KEY = process.env.SCRAPECREATORS_API_KEY || 'Hdbw4RGIHNUUS9us4RHd58uH16A2';
 
 export default async function handler(request, response) {
   // Configurações de CORS
@@ -39,8 +39,8 @@ export default async function handler(request, response) {
       return response.status(400).json({ message: 'Nome de usuário ausente ou inválido.' });
     }
 
-    if (!SCRAPINGDOG_API_KEY) {
-      console.error('Token da SCRAPINGDOG_API_KEY não configurado nas variáveis de ambiente.');
+    if (!SCRAPECREATORS_API_KEY) {
+      console.error('Token da SCRAPECREATORS_API_KEY não configurado nas variáveis de ambiente.');
       return response.status(500).json({ message: 'Configuração do servidor incompleta (API key ausente).' });
     }
     
@@ -49,20 +49,23 @@ export default async function handler(request, response) {
       ? username.trim().substring(1) 
       : username.trim();
       
-    const scrapingDogUrl = `https://api.scrapingdog.com/instagram?api_key=${SCRAPINGDOG_API_KEY}&username=${trimmedUsername}`;
+    const scrapCreatorsUrl = `https://api.scrapecreators.com/v1/instagram/profile?handle=${trimmedUsername}`;
     
-    console.log(`Chamando ScrapingDog API para o usuário: ${trimmedUsername}`);
+    console.log(`Chamando ScrapCreators API para o usuário: ${trimmedUsername}`);
 
-    const scrapingDogResponse = await fetch(scrapingDogUrl, {
-      method: 'GET'
+    const scrapCreatorsResponse = await fetch(scrapCreatorsUrl, {
+      method: 'GET',
+      headers: {
+        'x-api-key': SCRAPECREATORS_API_KEY
+      }
     });
 
-    if (!scrapingDogResponse.ok) {
-      const errorText = await scrapingDogResponse.text();
-      console.error(`Erro ao chamar ScrapingDog API: ${scrapingDogResponse.status} ${scrapingDogResponse.statusText}`, errorText);
+    if (!scrapCreatorsResponse.ok) {
+      const errorText = await scrapCreatorsResponse.text();
+      console.error(`Erro ao chamar ScrapCreators API: ${scrapCreatorsResponse.status} ${scrapCreatorsResponse.statusText}`, errorText);
       
       // Tentar extrair mensagem de erro da resposta JSON, se disponível
-      let apiErrorMessage = `Erro ao buscar dados do perfil: ${scrapingDogResponse.statusText}`;
+      let apiErrorMessage = `Erro ao buscar dados do perfil: ${scrapCreatorsResponse.statusText}`;
       try {
         const parsedError = JSON.parse(errorText);
         if (parsedError && parsedError.message) {
@@ -73,13 +76,13 @@ export default async function handler(request, response) {
         if(errorText.length < 100) apiErrorMessage = errorText;
       }
       
-      return response.status(scrapingDogResponse.status).json({ message: apiErrorMessage });
+      return response.status(scrapCreatorsResponse.status).json({ message: apiErrorMessage });
     }
 
-    const results = await scrapingDogResponse.json();
+    const results = await scrapCreatorsResponse.json();
 
-    if (!results || !results.username) {
-      console.error('Resposta inválida ou erro da ScrapingDog API:', results);
+    if (!results || !results.data || !results.data.user) {
+      console.error('Resposta inválida ou erro da ScrapCreators API:', results);
       let message = 'Falha ao obter dados do perfil (resposta inesperada da API).';
       if (results && results.message) {
         message = results.message;
@@ -88,12 +91,13 @@ export default async function handler(request, response) {
       return response.status(500).json({ message });
     }
     
-    const profilePicUrl = results.profile_pic_url || results.profile_pic_url_hd;
-    const fullName = results.full_name;
-    const apiUsername = results.username;
+    const profileData = results.data.user;
+    const profilePicUrl = profileData.profile_pic_url;
+    const fullName = profileData.full_name;
+    const apiUsername = profileData.username;
 
     if (!profilePicUrl || !fullName || !apiUsername) {
-      console.error('Dados de foto, nome completo ou username ausentes nos resultados da ScrapingDog API:', results);
+      console.error('Dados de foto, nome completo ou username ausentes nos resultados da ScrapCreators API:', results);
       return response.status(500).json({ message: 'Dados incompletos recebidos do provedor de API.' });
     }
 

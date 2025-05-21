@@ -69,7 +69,7 @@ app.post('/api/instagram-profile', async (req, res) => {
     const results = await scrapCreatorsResponse.json();
     console.log("Resposta recebida da API:", JSON.stringify(results, null, 2));
 
-    if (!results || !results.data) {
+    if (!results || !results.data || !results.data.user) {
       console.error('Resposta inválida ou erro da ScrapCreators API:', results);
       let message = 'Falha ao obter dados do perfil (resposta inesperada da API).';
       if (results && results.message) {
@@ -79,7 +79,7 @@ app.post('/api/instagram-profile', async (req, res) => {
       return res.status(500).json({ message });
     }
     
-    const profileData = results.data;
+    const profileData = results.data.user;
     const profilePicUrl = profileData.profile_pic_url;
     const fullName = profileData.full_name;
     const apiUsername = profileData.username;
