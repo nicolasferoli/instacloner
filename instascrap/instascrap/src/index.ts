@@ -1,8 +1,6 @@
 export interface Env {
-  // Variável de ambiente para armazenar seu token da API da Apify
-  APIFY_TOKEN: string;
-  // Variável de ambiente para o ID do seu Actor da Apify
-  APIFY_INSTAGRAM_ACTOR_ID: string;
+  // Variável de ambiente para armazenar seu token da API da Scrape Creators
+  SCRAPECREATORS_API_KEY: string; 
 }
 
 export default {
@@ -10,7 +8,7 @@ export default {
     // ctx foi comentado pois não está sendo usado e pode causar erro de tipo
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*', // Em produção, restrinja ao seu domínio frontend
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS', // Mantendo POST para a requisição do cliente
       'Access-Control-Allow-Headers': 'Content-Type',
     };
 
@@ -18,10 +16,11 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-		const url = new URL(request.url);
+    const url = new URL(request.url);
 
-    if (url.pathname === '/api/apify-insta-profile') {
-      if (request.method !== 'POST') {
+    // Endpoint alterado para /api/instagram-profile
+    if (url.pathname === '/api/instagram-profile') { 
+      if (request.method !== 'POST') { // Mantendo a expectativa de POST do cliente
         return new Response(JSON.stringify({ message: 'Método não permitido. Use POST.' }), {
           status: 405,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -39,105 +38,63 @@ export default {
           });
         }
 
-        if (!env.APIFY_TOKEN) {
-          console.error('Token da APIFY_TOKEN não configurado no Worker.');
-          return new Response(JSON.stringify({ message: 'Configuração do servidor incompleta (token ausente).' }), {
+        // Verificação da nova variável de ambiente
+        if (!env.SCRAPECREATORS_API_KEY) {
+          console.error('Token da SCRAPECREATORS_API_KEY não configurado no Worker.');
+          return new Response(JSON.stringify({ message: 'Configuração do servidor incompleta (API key ausente).' }), {
             status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
         
-        if (!env.APIFY_INSTAGRAM_ACTOR_ID) {
-          console.error('ID do Actor da APIFY_INSTAGRAM_ACTOR_ID não configurado no Worker.');
-          return new Response(JSON.stringify({ message: 'Configuração do servidor incompleta (ID do actor ausente).' }), {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-
         const trimmedUsername = username.trim();
 
-        // Input para o Actor da Apify (pode variar dependendo do Actor)
-        // Consulte a documentação do Actor específico que você está usando.
-        const actorInput = {
-          usernames: [trimmedUsername],
-          // Outros parâmetros que o seu Actor possa precisar...
-          // resultsLimit: 1, 
-        };
-
-        // URL para executar o Actor e obter o resultado do último run (ou de um run específico)
-        // Consulte a documentação da API da Apify para a melhor forma de executar e obter resultados
-        // https://docs.apify.com/api/v2#/reference/actors/run-actor-and-get-dataset-items
-        const apifyActorRunUrl = `https://api.apify.com/v2/acts/${env.APIFY_INSTAGRAM_ACTOR_ID}/runs?token=${env.APIFY_TOKEN}`;
+        // Nova lógica para chamar a API Scrape Creators
+        const scrapeCreatorsUrl = `https://api.scrapecreators.com/v1/instagram/profile?username=${trimmedUsername}`;
         
-        console.log(`Chamando Apify Actor: ${env.APIFY_INSTAGRAM_ACTOR_ID} para o usuário: ${trimmedUsername}`);
+        console.log(`Chamando Scrape Creators API para o usuário: ${trimmedUsername}`);
 
-        const apifyResponse = await fetch(apifyActorRunUrl, {
-          method: 'POST',
+        const scrapeCreatorsResponse = await fetch(scrapeCreatorsUrl, {
+          method: 'GET', // API da Scrape Creators espera GET
           headers: {
-            'Content-Type': 'application/json',
+            'x-api-key': env.SCRAPECREATORS_API_KEY,
+            // 'Content-Type': 'application/json', // Geralmente não necessário para GET simples
           },
-          body: JSON.stringify(actorInput),
         });
 
-        if (!apifyResponse.ok) {
-          const errorText = await apifyResponse.text();
-          console.error(`Erro ao chamar Apify Actor Run: ${apifyResponse.status} ${apifyResponse.statusText}`, errorText);
-          return new Response(JSON.stringify({ message: `Erro ao iniciar o scraper da Apify: ${apifyResponse.statusText}` }), {
-            status: apifyResponse.status,
+        if (!scrapeCreatorsResponse.ok) {
+          const errorText = await scrapeCreatorsResponse.text();
+          console.error(`Erro ao chamar Scrape Creators API: ${scrapeCreatorsResponse.status} ${scrapeCreatorsResponse.statusText}`, errorText);
+          return new Response(JSON.stringify({ message: `Erro ao buscar dados do perfil: ${scrapeCreatorsResponse.statusText}` }), {
+            status: scrapeCreatorsResponse.status,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
 
-        // A resposta da execução de um run geralmente contém informações sobre o run, incluindo o datasetId.
-        // Você precisará então buscar os itens do dataset.
-        const runDetails = await apifyResponse.json() as any; // Tipar isso melhor com base na resposta da Apify
-        const datasetId = runDetails.data?.defaultDatasetId;
+        const results = await scrapeCreatorsResponse.json() as any; 
 
-        if (!datasetId) {
-          console.error('Dataset ID não encontrado na resposta da Apify run.', runDetails);
-          return new Response(JSON.stringify({ message: 'Falha ao obter resultados da Apify (datasetId ausente).'}), {
-            status: 500,
+        if (results.status !== 'ok' || !results.data || !results.data.user) {
+          console.error('Resposta inválida ou erro da Scrape Creators API:', results);
+          let message = 'Falha ao obter dados do perfil (resposta inesperada da API).';
+          if (results.message) { // Se a API ScrapeCreators retornar uma mensagem de erro específica
+            message = results.message;
+          }
+          return new Response(JSON.stringify({ message }), {
+            status: results.status && typeof results.status === 'number' ? results.status : 500, // Tenta usar o status da API se for um número
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
+        
+        const userProfile = results.data.user;
 
-        // Buscando os itens do dataset
-        const datasetItemsUrl = `https://api.apify.com/v2/datasets/${datasetId}/items?token=${env.APIFY_TOKEN}`;
-        console.log(`Buscando itens do dataset da Apify: ${datasetId}`);
-        const datasetResponse = await fetch(datasetItemsUrl);
+        const profilePicUrl = userProfile.profile_pic_url;
+        const fullName = userProfile.full_name;
+        const apiUsername = userProfile.username; 
 
-        if (!datasetResponse.ok) {
-          const errorText = await datasetResponse.text();
-          console.error(`Erro ao buscar itens do dataset da Apify: ${datasetResponse.status} ${datasetResponse.statusText}`, errorText);
-          return new Response(JSON.stringify({ message: `Erro ao buscar resultados da Apify: ${datasetResponse.statusText}` }), {
-            status: datasetResponse.status,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-
-        const results = await datasetResponse.json() as any[]; // Tipar isso com base no output do seu Actor
-
-        if (!results || results.length === 0) {
-          console.log('Nenhum resultado encontrado no dataset da Apify para o usuário:', trimmedUsername);
-          return new Response(JSON.stringify({ message: 'Perfil não encontrado ou sem dados via Apify.' }), {
-            status: 404,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-
-        // Assumindo que o Actor retorna um array de perfis, e pegamos o primeiro.
-        // Você PRECISARÁ AJUSTAR os nomes dos campos abaixo com base na saída REAL do seu Actor da Apify.
-        const profile = results[0];
-        const profilePicUrl = profile.profilePicUrl || profile.profile_pic_url || profile.profilePictureUrl || profile.avatarUrl;
-        const fullName = profile.fullName || profile.full_name;
-        // O username já temos, mas o actor pode retornar uma versão canonica.
-        const apifyUsername = profile.username || trimmedUsername;
-
-        if (!profilePicUrl || !fullName) {
-          console.error('Dados de foto ou nome completo ausentes nos resultados da Apify:', profile);
-          return new Response(JSON.stringify({ message: 'Dados incompletos recebidos da Apify.' }), {
-            status: 500,
+        if (!profilePicUrl || !fullName || !apiUsername) {
+          console.error('Dados de foto, nome completo ou username ausentes nos resultados da Scrape Creators API:', userProfile);
+          return new Response(JSON.stringify({ message: 'Dados incompletos recebidos do provedor de API.' }), {
+            status: 500, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
@@ -145,7 +102,7 @@ export default {
         const responseData = {
           profilePicUrl: profilePicUrl,
           fullName: fullName,
-          username: apifyUsername,
+          username: apiUsername,
         };
 
         return new Response(JSON.stringify(responseData), {
@@ -154,7 +111,7 @@ export default {
         });
 
       } catch (error: any) {
-        console.error('Erro no Worker ao processar /api/apify-insta-profile:', error);
+        console.error(`Erro no Worker ao processar /api/instagram-profile:`, error);
         return new Response(JSON.stringify({ message: `Erro interno no worker: ${error.message || error.toString()}` }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
