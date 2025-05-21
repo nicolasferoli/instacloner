@@ -82,7 +82,7 @@ const Home = () => {
       description: "Perfil clonado com sucesso!",
     });
     // Redirecionar para a landing page após clonar o perfil
-    window.location.href = "/lp/";
+    window.location.href = "/lp";
     setShowProfileConfirmation(false);
   };
   
