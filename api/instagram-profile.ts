@@ -3,8 +3,8 @@ export interface Env {
   SCRAPECREATORS_API_KEY: string; 
 }
 
-export default {
-  async fetch(request: Request, env: Env /*, ctx: ExecutionContext */): Promise<Response> {
+// Exportamos a função fetch diretamente
+export async function fetch(request: Request, env: Env /*, ctx: ExecutionContext */): Promise<Response> {
     // ctx foi comentado pois não está sendo usado e pode causar erro de tipo
     const allowedOrigin = 'https://instacloner.vercel.app'; // Seu domínio Vercel
     const corsHeaders = {
@@ -61,7 +61,7 @@ export default {
       
       console.log(`Chamando Scrape Creators API para o usuário: ${trimmedUsername}`);
 
-      const scrapeCreatorsResponse = await fetch(scrapeCreatorsUrl, {
+      const scrapeCreatorsResponse = await globalThis.fetch(scrapeCreatorsUrl, {
         method: 'GET',
         headers: {
           'x-api-key': env.SCRAPECREATORS_API_KEY,
@@ -134,5 +134,4 @@ export default {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-  }
-}; 
+} 
