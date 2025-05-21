@@ -8,11 +8,16 @@ export default async function handler(
   response: VercelResponse
 ) {
   // Configurações de CORS
-  const allowedOrigin = 'https://instacloner.vercel.app';
+  const allowedOrigins = [
+    'https://instacloner.vercel.app',
+    'http://localhost:8080',
+    'http://127.0.0.1:8080'
+  ];
   
   // Verificar a origem
-  if (request.headers.origin === allowedOrigin) {
-    response.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+  const origin = request.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    response.setHeader('Access-Control-Allow-Origin', origin);
   }
   response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -98,8 +103,23 @@ export default async function handler(
       return response.status(500).json({ message: 'Dados incompletos recebidos do provedor de API.' });
     }
 
+    // Log da URL da imagem para debug
+    console.log("URL da imagem de perfil retornada pela API:", profilePicUrl);
+
+    // Verificar se é uma URL válida
+    let validatedProfilePicUrl = profilePicUrl;
+    try {
+      new URL(profilePicUrl);
+    } catch (e) {
+      console.error("URL da imagem inválida:", profilePicUrl);
+      validatedProfilePicUrl = ''; // Fornecer URL vazia para acionar o fallback no front-end
+    }
+
+    // Usar a URL do proxy para evitar problemas de CORS
+    const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(validatedProfilePicUrl)}`;
+
     const responseData = {
-      profilePicUrl,
+      profilePicUrl: proxyUrl,
       fullName,
       username: apiUsername,
     };

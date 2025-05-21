@@ -54,6 +54,9 @@ const Home = () => {
         throw new Error("Dados do perfil recebidos da API incompletos.");
       }
 
+      console.log("Dados de perfil recebidos:", data);
+      console.log("URL da imagem:", data.profilePicUrl);
+
       setProfileData({
         username: username.trim(), 
         profilePicUrl: data.profilePicUrl,
@@ -118,15 +121,39 @@ const Home = () => {
           </form>
         ) : (
           <div className="mt-6 flex flex-col items-center">
-            <Avatar className="h-32 w-32">
-              <AvatarImage src={profileData?.profilePicUrl} alt={profileData?.username} />
-              <AvatarFallback className="bg-gray-700 text-gray-100">{profileData?.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            
-            <div className="mt-6 text-center">
-              <h2 className="text-xl font-bold text-gray-100">@{profileData?.username}</h2>
-              <p className="text-gray-400">{profileData?.fullName}</p>
-            </div>
+            {profileData?.profilePicUrl && (
+              <>
+                <div className="relative h-32 w-32 rounded-full overflow-hidden">
+                  <img 
+                    src={profileData.profilePicUrl}
+                    alt={profileData.username}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      console.error("Erro ao carregar imagem:", e);
+                      // @ts-ignore
+                      e.target.style.display = 'none';
+                      // Mostrar o fallback
+                      const fallbackElement = document.getElementById('avatar-fallback');
+                      if (fallbackElement) {
+                        fallbackElement.style.display = 'flex';
+                      }
+                    }}
+                  />
+                  <div 
+                    id="avatar-fallback"
+                    className="absolute inset-0 bg-gray-700 text-gray-100 flex items-center justify-center text-2xl font-bold"
+                    style={{display: 'none'}}
+                  >
+                    {profileData.username.substring(0, 2).toUpperCase()}
+                  </div>
+                </div>
+
+                <div className="mt-6 text-center">
+                  <h2 className="text-xl font-bold text-gray-100">@{profileData.username}</h2>
+                  <p className="text-gray-400">{profileData.fullName}</p>
+                </div>
+              </>
+            )}
             
             <div className="mt-8 bg-gray-800/50 p-6 rounded-xl border border-gray-700">
               <p className="text-center text-lg text-gray-200">
