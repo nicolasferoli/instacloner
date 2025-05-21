@@ -35,7 +35,7 @@ const Home = () => {
     setProfileData(null);
     
     try {
-      const response = await fetch('/api/apify-insta-profile', {
+      const response = await fetch('/api/instagram-profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
