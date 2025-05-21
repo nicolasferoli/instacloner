@@ -14,10 +14,10 @@ const CtaSection: React.FC = () => {
       <div className="container mx-auto max-w-4xl">
         <div className="bg-dark-300 border border-dark-100 rounded-2xl shadow-xl p-8 md:p-12">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-4xl font-bold mb-6 gsap-cta-title">
+            <h2 className="text-2xl md:text-4xl font-bold mb-6">
               Comece Sua Vigilância Total Agora
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto gsap-cta-subtitle">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Acesso imediato após o pagamento. Interface intuitiva que não requer conhecimentos técnicos.
             </p>
           </div>
@@ -55,7 +55,7 @@ const CtaSection: React.FC = () => {
                 <p className="text-xs text-gray-500 mt-2">Pagamento único - sem mensalidades</p>
               </div>
               
-              <Button href="https://kivano.com" variant="primary" className="w-full text-center gsap-main-cta">
+              <Button href="https://kivano.com" variant="primary" className="w-full text-center">
                 QUERO ACESSO TOTAL!
               </Button>
               

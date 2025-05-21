@@ -121,7 +121,7 @@ const Home = () => {
             
             <div className="text-center">
               <p className="text-instacloner-warning text-sm">
-                * Lembre-se de usar o app com moderação. A pessoa com o Instagram clonado não será notificada de nada, então não comece ações anormais.
+                * Lembre-se de usar o app com moderação. A pessoa com o Instagram clonado não será notificada de nada.
               </p>
             </div>
             
