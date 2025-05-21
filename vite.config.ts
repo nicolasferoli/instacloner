@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true
+  },
   plugins: [
     react(),
   ],
