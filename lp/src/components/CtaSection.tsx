@@ -15,7 +15,7 @@ const CtaSection: React.FC = () => {
         <div className="bg-dark-300 border border-dark-100 rounded-2xl shadow-xl p-8 md:p-12">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-4xl font-bold mb-6 gsap-cta-title">
-              Comece Sua <span className="bg-clip-text text-transparent bg-insta-gradient">Vigilância Total</span> Agora
+              Comece Sua Vigilância Total Agora
             </h2>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto gsap-cta-subtitle">
               Acesso imediato após o pagamento. Interface intuitiva que não requer conhecimentos técnicos.
@@ -49,14 +49,14 @@ const CtaSection: React.FC = () => {
                 <p className="text-2xl line-through text-gray-500">R$297,00</p>
                 <p className="text-gray-400 mt-4 mb-1">Oferta por tempo limitado</p>
                 <div className="flex items-center justify-center">
-                  <span className="text-4xl font-bold mr-2">R$197</span>
-                  <span className="text-gray-400">/acesso</span>
+                  <span className="text-4xl font-bold mr-2">R$37</span>
+                  <span className="text-gray-400">,00</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">Pagamento único - sem mensalidades</p>
               </div>
               
-              <Button href="#payment" variant="primary" className="w-full text-center gsap-main-cta">
-                SIM! EU QUERO ACESSO TOTAL!
+              <Button href="https://kivano.com" variant="primary" className="w-full text-center gsap-main-cta">
+                QUERO ACESSO TOTAL!
               </Button>
               
               <p className="text-sm text-gray-400 mt-4 text-center">

@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "dev:api": "node api-server.mjs",
-    "dev:full": "concurrently \"npm run dev\" \"npm run dev:api\"",
+    "dev:lp": "cd lp && vite --port 3001",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:api\" \"npm run dev:lp\"",
+    "setup:lp": "cd lp && npm install",
+    "dev:all": "npm run setup:lp && npm run dev:full",
     "build": "vite build",
     "build:lp": "cd lp && npm install && npm run build",
     "build:all": "npm run build && npm run build:lp",

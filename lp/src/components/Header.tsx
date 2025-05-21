@@ -23,10 +23,7 @@ const Header: React.FC = () => {
     >
       <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Eye className="w-8 h-8 text-instagram-pink" />
-          <span className="font-bold text-xl bg-clip-text text-transparent bg-insta-gradient">
-            InstaCloner
-          </span>
+          <img src="/lp/Logo.svg" alt="InstaCloner" className="h-8" />
         </div>
         <a 
           href="#cta" 

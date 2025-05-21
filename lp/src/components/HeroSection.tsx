@@ -4,7 +4,7 @@ import Button from './ui/Button';
 
 const HeroSection: React.FC = () => {
   return (
-    <section className="pt-28 pb-20 md:pt-32 md:pb-24 px-4 overflow-hidden relative" id="hero">
+    <section className="pt-16 pb-20 md:pt-20 md:pb-24 px-4 overflow-hidden relative" id="hero">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute h-40 w-40 rounded-full bg-instagram-purple/30 blur-3xl -top-10 -left-10"></div>
         <div className="absolute h-40 w-40 rounded-full bg-instagram-pink/20 blur-3xl top-20 right-10"></div>
@@ -14,8 +14,8 @@ const HeroSection: React.FC = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-            <span className="block">INSTACLONER</span>
-            <span className="bg-clip-text text-transparent bg-insta-gradient">VIGILÂNCIA TOTAL DO INSTAGRAM</span>
+            <img src="/lp/Logo.svg" alt="InstaCloner" className="max-w-[200px] md:max-w-[300px] mx-auto mb-16" />
+            <span className="text-white">VIGILÂNCIA TOTAL DO INSTAGRAM</span>
           </h1>
           
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">

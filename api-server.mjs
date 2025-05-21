@@ -31,24 +31,28 @@ app.post('/api/instagram-profile', async (req, res) => {
 
     console.log(`Buscando perfil para usuário: ${username}`);
     
-    const trimmedUsername = username.trim();
-    const scrapeCreatorsUrl = `https://api.scrapecreators.com/v1/instagram/profile?handle=${trimmedUsername}`;
+    // Remover o símbolo @ do início do nome de usuário, se existir
+    const trimmedUsername = username.trim().startsWith('@') 
+      ? username.trim().substring(1) 
+      : username.trim();
+      
+    const scrapCreatorsUrl = `https://api.scrapecreators.com/v1/instagram/profile?handle=${trimmedUsername}`;
     
-    console.log(`Chamando Scrape Creators API para o usuário: ${trimmedUsername}`);
+    console.log(`Chamando ScrapCreators API para o usuário: ${trimmedUsername}`);
 
-    const scrapeCreatorsResponse = await fetch(scrapeCreatorsUrl, {
+    const scrapCreatorsResponse = await fetch(scrapCreatorsUrl, {
       method: 'GET',
       headers: {
-        'x-api-key': SCRAPECREATORS_API_KEY,
-      },
+        'x-api-key': SCRAPECREATORS_API_KEY
+      }
     });
 
-    if (!scrapeCreatorsResponse.ok) {
-      const errorText = await scrapeCreatorsResponse.text();
-      console.error(`Erro ao chamar Scrape Creators API: ${scrapeCreatorsResponse.status} ${scrapeCreatorsResponse.statusText}`, errorText);
+    if (!scrapCreatorsResponse.ok) {
+      const errorText = await scrapCreatorsResponse.text();
+      console.error(`Erro ao chamar ScrapCreators API: ${scrapCreatorsResponse.status} ${scrapCreatorsResponse.statusText}`, errorText);
       
       // Tentar extrair mensagem de erro da resposta JSON, se disponível
-      let apiErrorMessage = `Erro ao buscar dados do perfil: ${scrapeCreatorsResponse.statusText}`;
+      let apiErrorMessage = `Erro ao buscar dados do perfil: ${scrapCreatorsResponse.statusText}`;
       try {
         const parsedError = JSON.parse(errorText);
         if (parsedError && parsedError.message) {
@@ -59,33 +63,29 @@ app.post('/api/instagram-profile', async (req, res) => {
         if(errorText.length < 100) apiErrorMessage = errorText;
       }
       
-      return res.status(scrapeCreatorsResponse.status).json({ message: apiErrorMessage });
+      return res.status(scrapCreatorsResponse.status).json({ message: apiErrorMessage });
     }
 
-    const results = await scrapeCreatorsResponse.json();
+    const results = await scrapCreatorsResponse.json();
     console.log("Resposta recebida da API:", JSON.stringify(results, null, 2));
 
-    if (results.status !== 'ok' || !results.data || !results.data.user) {
-      console.error('Resposta inválida ou erro da Scrape Creators API:', results);
+    if (!results || !results.data) {
+      console.error('Resposta inválida ou erro da ScrapCreators API:', results);
       let message = 'Falha ao obter dados do perfil (resposta inesperada da API).';
-      if (results.message) {
+      if (results && results.message) {
         message = results.message;
       }
       
-      const statusCode = (results.status && typeof results.status === 'number') 
-        ? results.status 
-        : (scrapeCreatorsResponse.status !== 200 ? scrapeCreatorsResponse.status : 500);
-      
-      return res.status(statusCode).json({ message });
+      return res.status(500).json({ message });
     }
     
-    const userProfile = results.data.user;
-    const profilePicUrl = userProfile.profile_pic_url;
-    const fullName = userProfile.full_name;
-    const apiUsername = userProfile.username; 
+    const profileData = results.data;
+    const profilePicUrl = profileData.profile_pic_url;
+    const fullName = profileData.full_name;
+    const apiUsername = profileData.username;
 
     if (!profilePicUrl || !fullName || !apiUsername) {
-      console.error('Dados de foto, nome completo ou username ausentes nos resultados da Scrape Creators API:', userProfile);
+      console.error('Dados de foto, nome completo ou username ausentes nos resultados da ScrapCreators API:', results);
       return res.status(500).json({ message: 'Dados incompletos recebidos do provedor de API.' });
     }
 

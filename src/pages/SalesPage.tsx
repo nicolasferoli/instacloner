@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Logo from "@/components/Logo";
 
@@ -32,7 +31,7 @@ const SalesPage = () => {
         {/* Header */}
         <div className="bg-white p-6 rounded-xl mb-8 shadow-md">
           <h1 className="text-2xl md:text-3xl font-bold text-center text-red-600 mb-4">
-            🚨 INSTACLONER | VIGILÂNCIA TOTAL DO INSTAGRAM
+            🚨 VIGILÂNCIA TOTAL DO INSTAGRAM
           </h1>
           <div className="flex justify-center">
             <Logo />
@@ -105,7 +104,7 @@ const SalesPage = () => {
           
           <div className="space-y-6">
             <div className="bg-gray-100 p-4 rounded">
-              <p className="italic mb-2">"Perdi 1 ano com um mentiroso. O InstaCloner me mostrou a verdade em 3 minutos."</p>
+              <p className="italic mb-2">"Perdi 1 ano com um mentiroso. <img src="/Logo.svg" alt="InstaCloner" className="h-5 inline-block mx-1" /> me mostrou a verdade em 3 minutos."</p>
               <p className="text-right text-sm">– Ana Luiza, 28 anos</p>
             </div>
             
@@ -142,7 +141,7 @@ const SalesPage = () => {
             </li>
             <li className="flex items-start">
               <span className="text-green-500 mr-2 mt-1">✅</span> 
-              <span className="font-medium"><strong>Bônus exclusivo:</strong> Localização em tempo real (beta)</span>
+              <span className="font-medium"><strong>Bônus exclusivo:</strong> Localização em tempo real</span>
             </li>
           </ul>
           
@@ -227,7 +226,7 @@ const SalesPage = () => {
           </p>
           
           <div className="text-center text-sm text-gray-500 mb-6">
-            © 2025 INSTACLONER | <a href="#" className="underline">Termos de Uso</a> | <a href="#" className="underline">Política de Privacidade</a>
+            © 2025 <img src="/Logo.svg" alt="InstaCloner" className="h-4 inline-block mx-1" /> | <a href="#" className="underline">Termos de Uso</a> | <a href="#" className="underline">Política de Privacidade</a>
           </div>
           
           <div className="text-center">

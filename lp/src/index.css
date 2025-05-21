@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .bg-dark-gradient {
+    background: linear-gradient(to bottom, #1a1a2e, #121212);
+  }
+  
+  .bg-dark-gradient-alt {
+    background: linear-gradient(to bottom, #0f0f1e, #1a1a2e);
+  }
+}

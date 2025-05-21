@@ -7,7 +7,7 @@ const TrustSection: React.FC = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-4xl font-bold mb-6 gsap-section-title">
-            Por Que Confiar No <span className="bg-clip-text text-transparent bg-insta-gradient">InstaCloner</span>?
+            Por Que Confiar No <span className="text-instagram-pink">InstaCloner</span>?
           </h2>
           <p className="text-lg text-gray-300 max-w-3xl mx-auto gsap-section-subtitle">
             Anos de experiência em segurança digital e tecnologia avançada garantem sua tranquilidade.

@@ -4,11 +4,29 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InstaCloner | Vigilância Total do Instagram</title>
+    <title>Vigilância Total do Instagram</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <meta name="description" content="Acesso completo a qualquer perfil do Instagram. Zero rastros. 7 dias de garantia." />
+    <style>
+      /* Garantir que todos os elementos sejam carregados de uma vez */
+      * { 
+        transition: none !important; 
+      }
+      
+      /* Desativar animações baseadas em scroll ou lazy loading */
+      .gsap-section-title, 
+      .gsap-section-subtitle, 
+      .gsap-trust-card, 
+      .gsap-cta-title, 
+      .gsap-cta-subtitle, 
+      .gsap-main-cta {
+        opacity: 1 !important;
+        transform: none !important;
+        visibility: visible !important;
+      }
+    </style>
   </head>
   <body class="bg-dark-400 text-white">
     <div id="root"></div>

@@ -41,7 +41,7 @@ const FeaturesSection: React.FC = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-4xl font-bold mb-6">
-            O Que O <span className="bg-clip-text text-transparent bg-insta-gradient">InstaCloner</span> Oferece?
+            O Que O <span className="text-instagram-pink">InstaCloner</span> Oferece?
           </h2>
           <p className="text-lg text-gray-300 max-w-3xl mx-auto">
             Vigilância completa, invisível e poderosa. Descubra tudo o que acontece no Instagram sem ser detectado.

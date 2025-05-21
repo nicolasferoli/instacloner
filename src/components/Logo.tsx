@@ -1,10 +1,9 @@
-
 import React from 'react';
 
 const Logo = () => {
   return (
     <div className="flex justify-center">
-      <h1 className="clonegram-logo">InstaCloner</h1>
+      <img src="/Logo.svg" alt="InstaCloner" className="h-14 max-w-[300px]" />
     </div>
   );
 };

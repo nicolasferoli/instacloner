@@ -25,7 +25,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
         </div>
         
         <h3 className="text-xl font-semibold mb-3">
-          <span className="bg-clip-text text-transparent bg-insta-gradient">✅</span> {title}
+          {title}
         </h3>
         
         <p className="text-gray-400">

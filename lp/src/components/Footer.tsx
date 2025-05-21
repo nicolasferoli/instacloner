@@ -1,5 +1,4 @@
 import React from 'react';
-import { Eye } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -7,10 +6,7 @@ const Footer: React.FC = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <Eye className="w-6 h-6 text-instagram-pink" />
-            <span className="font-bold text-xl bg-clip-text text-transparent bg-insta-gradient">
-              InstaCloner
-            </span>
+            <img src="/lp/Logo.svg" alt="InstaCloner" className="h-8" />
           </div>
           
           <div>
@@ -24,7 +20,7 @@ const Footer: React.FC = () => {
         
         <div className="text-center text-sm text-gray-500">
           <p className="mb-2">
-            InstaCloner &copy; {new Date().getFullYear()} - Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} - Todos os direitos reservados.
           </p>
           <p>
             O uso deste software é de total responsabilidade do usuário.

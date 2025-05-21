@@ -13,6 +13,10 @@ export default defineConfig(({ mode }) => ({
         changeOrigin: true,
         rewrite: (path) => path,
       },
+      '/lp': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
     },
   },
   build: {

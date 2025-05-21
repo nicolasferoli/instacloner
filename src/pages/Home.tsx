@@ -35,12 +35,17 @@ const Home = () => {
     setProfileData(null);
     
     try {
+      // Remove o @ do início do username, se existir
+      const cleanUsername = username.trim().startsWith('@') 
+        ? username.trim().substring(1) 
+        : username.trim();
+      
       const response = await fetch('/api/instagram-profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: username.trim() }),
+        body: JSON.stringify({ username: cleanUsername }),
       });
 
       if (!response.ok) {
@@ -58,7 +63,7 @@ const Home = () => {
       console.log("URL da imagem:", data.profilePicUrl);
 
       setProfileData({
-        username: username.trim(), 
+        username: data.username, // Usa o username retornado pela API
         profilePicUrl: data.profilePicUrl,
         fullName: data.fullName,
       });
@@ -89,6 +94,11 @@ const Home = () => {
   const handleBack = () => {
     setProfileData(null);
     setShowProfileConfirmation(false);
+  };
+
+  // Função para formatar corretamente o nome de usuário
+  const formatUsername = (username: string) => {
+    return username.startsWith('@') ? username : `@${username}`;
   };
 
   return (
@@ -151,7 +161,7 @@ const Home = () => {
                 </div>
 
                 <div className="mt-6 text-center">
-                  <h2 className="text-xl font-bold text-gray-100">@{profileData.username}</h2>
+                  <h2 className="text-xl font-bold text-gray-100">{formatUsername(profileData.username)}</h2>
                   <p className="text-gray-400">{profileData.fullName}</p>
                 </div>
               </>
