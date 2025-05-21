@@ -44,14 +44,14 @@ const Home = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: "Erro ao buscar perfil. A API da Apify retornou um erro." }));
-        throw new Error(errorData.message || `Erro ${response.status} ao buscar o perfil via Apify.`);
+        const errorData = await response.json().catch(() => ({ message: "Erro ao buscar perfil. A API retornou um erro." }));
+        throw new Error(errorData.message || `Erro ${response.status} ao buscar o perfil.`);
       }
 
       const data: ProfileData = await response.json();
       
       if (!data.profilePicUrl || !data.fullName) { 
-        throw new Error("Dados do perfil recebidos da Apify incompletos.");
+        throw new Error("Dados do perfil recebidos da API incompletos.");
       }
 
       setProfileData({
@@ -62,10 +62,10 @@ const Home = () => {
       setShowProfileConfirmation(true);
 
     } catch (error) {
-      console.error("Erro ao buscar perfil via Apify:", error);
+      console.error("Erro ao buscar perfil:", error);
       toast({
-        title: "Erro de API (Apify)",
-        description: error instanceof Error ? error.message : "Ocorreu um erro desconhecido ao buscar o perfil via Apify.",
+        title: "Erro de API",
+        description: error instanceof Error ? error.message : "Ocorreu um erro desconhecido ao buscar o perfil.",
         variant: "destructive",
       });
     } finally {
