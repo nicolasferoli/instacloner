@@ -55,7 +55,7 @@ const CtaSection: React.FC = () => {
                 <p className="text-xs text-gray-500 mt-2">Pagamento único - sem mensalidades</p>
               </div>
               
-              <Button href="https://kivano.com" variant="primary" className="w-full text-center">
+              <Button href="https://pay.kirvano.com/6dda2ecf-0536-436b-ae34-179117c75e4e" variant="primary" className="w-full text-center">
                 QUERO ACESSO TOTAL!
               </Button>
               
